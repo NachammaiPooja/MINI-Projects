@@ -1,0 +1,59 @@
+<html>
+    <head>
+
+    </head>
+    <style>
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
+        
+        td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+        }
+        
+        tr:nth-child(even) {
+          background-color: #dddddd;
+        }
+        </style>
+    <body>
+        <a href="/teacher"><button>Back</button></a>
+  <h3>List of Approved Candidates:</h3>
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Department</th>
+      
+    </tr>
+    {%for student in students%}
+    <tr>
+      <td>{{student.Name}}</td>
+      <td>{{student.Email_id}}</td>
+      <td>{{student.Department}}</td>
+    </tr>
+    {%endfor%}
+  </table>
+  <h3>List of Enrolled Courses:</h3>
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Department</th>
+      <th>Approve Student</th>
+    </tr>
+    {%for student in pendstudents%}
+    <tr>
+      <td>{{student.Name}}</td>
+      <td>{{student.Email_id}}</td>
+      <td>{{student.Department}}</td>
+      <td><a href="/approve/{{course.id}}/{{student.id}}"><button>Approve</button></a></td>
+    </tr>
+    {%endfor%}
+  
+  </table>
+  </body>
+</html>

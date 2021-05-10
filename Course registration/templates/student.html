@@ -1,0 +1,89 @@
+<html>
+    <head>
+
+    </head>
+    <style>
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
+        
+        td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+        }
+        
+        tr:nth-child(even) {
+          background-color: #dddddd;
+        }
+        </style>
+    <body>
+      <h2 style="padding-top:200px;">Welcome Student !!!</h2><br>
+      <a href="/"><button>Logout</button></a>
+<h3>List of New Courses:</h3>
+<table>
+  <tr>
+    <th>Subject Name</th>
+    <th>Domain</th>
+    <th>Teacher Name</th>
+    <th>LastDate</th>
+    <th>PreRequiste</th>
+    <th>Apply</th>
+  </tr>
+  {%for course in allcourses%}
+  <tr>
+    <td>{{course.name}}</td>
+    <td>{{course.domain}}</td>
+    <td>{{course.teacher.Name}}</td>
+    <td>{{course.last_date}}</td>
+    <td>{{course.prerequisites}}</td>
+    <td><a href="/apply/{{course.id}}"><button>Apply</button></a></td>
+  </tr>
+  {%endfor%}
+  
+</table>
+<h3>List of Enrolled Courses:</h3>
+<table>
+  <tr>
+    <th>Subject Name</th>
+    <th>Domain</th>
+    <th>Teacher Name</th>
+    <th>PreRequiste</th>
+    <th>View Details</th>
+  </tr>
+  {%for course in appcourses%}
+  <tr>
+    <td>{{course.name}}</td>
+    <td>{{course.domain}}</td>
+    <td>{{course.teacher.Name}}</td>
+    <td>{{course.prerequisites}}</td>
+    <td><a href="/view"><button>View</button></a></td>
+  </tr>
+  {%endfor%}
+  
+</table>
+
+<h3>List of Pending Courses:</h3>
+<table>
+  <tr>
+    <th>Subject Name</th>
+    <th>Domain</th>
+    <th>Teacher Name</th>
+    <th>PreRequiste</th>
+    <th>Unenroll</th>
+  </tr>
+  {%for course in pendcourses%}
+  <tr>
+    <td>{{course.name}}</td>
+    <td>{{course.domain}}</td>
+    <td>{{course.teacher.Name}}</td>
+    <td>{{course.prerequisites}}</td>
+    <td><a href="/delete/{{course.id}}"><button>Delete</button></a></td>
+  </tr>
+  {%endfor%}
+  
+  </table>
+  </body>
+</html>

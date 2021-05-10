@@ -1,0 +1,57 @@
+<hhtml>
+    <head>
+
+    </head>
+    <body>
+        <a href="/"><button>Logout</button></a>
+        <h3>Create New Course:</h3>
+        <form action="createcourse" method='POST'>
+            <label for="subname">Subject Name:</label><br>
+            <input type="text" id="uname" name="subname"><br>
+            <label for="domain">Domain:</label><br>
+            <input type="text" id="domain" name="domain"><br>
+            <label for="req">Prerequesite:</label><br>
+            <input type="text" id="request" name="req"><br>
+            <label for="date">Last Date to Apply:</label><br>
+            <input type="text" id="date" name="date"><br><br>
+            <input type="submit" value="Submit">
+        </form>
+        <style>
+            table {
+              font-family: arial, sans-serif;
+              border-collapse: collapse;
+              width: 100%;
+            }
+            
+            td, th {
+              border: 1px solid #dddddd;
+              text-align: left;
+              padding: 8px;
+            }
+            
+            tr:nth-child(even) {
+              background-color: #dddddd;
+            }
+          </style>
+    
+        <h3>List of Created Courses:</h3>
+<table>
+  <tr>
+    <th>Course Name</th>
+    <th>View Deatils</th>
+    
+  </tr>
+  {%for course in courses%}
+  <tr>
+    <td>{{course.name}}</td>
+    
+    <td><a href="/seestudents/{{course.id}}"><button>View</button></a></td>
+  </tr>
+  {%endfor%}
+  
+</table>
+
+    
+
+    </body>
+</hhtml>
