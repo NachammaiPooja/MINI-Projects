@@ -1,0 +1,12 @@
+
+{{items[0]}}<br>
+
+{{items[1]}}<br>
+{%for i in items%}
+        {{i}}   
+
+{%endfor%} 
+<form action="/select" method="POST">
+<input type="text" id="userid" name="userid"   placeholder="Enter id of applicant to be selected" >
+    <button type="submit">Select applicant</button>
+    
