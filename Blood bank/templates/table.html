@@ -1,0 +1,50 @@
+<html>
+    <head>
+
+    </head>
+    <body>
+        <style>
+            table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+        </style>
+        <center> <h2>The request Blood is not available with us.</h2>
+            <h2>Try contacting below donors</h2><h2>List of Available Donors</h2> </center>
+        <table>
+            <tr>
+              <th>Donor Name:</th>
+              <th>Contact</th>
+              
+            </tr>
+            {%for donor in donors%}
+            <tr>
+              <td>{{donor.Name}}</td>
+              <td>{{donor.Contact}}</td>
+              
+            </tr>
+            {%endfor%}
+            <tr>
+              <td>Raja</td>
+              <td>9894465024</td>
+
+            </tr>
+            <tr>
+              <td>Siva</td>
+              <td>9941330536</td>
+              
+            </tr>
+            
+          </table>
+    </body>
+</html>
