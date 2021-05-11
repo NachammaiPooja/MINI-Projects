@@ -1,51 +1,36 @@
-from flask import Flask, url_for , request, redirect , session, g
-from flask import render_template
+from flask import Flask , request, redirect , session, g,render_template
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime,date,timedelta
-from sqlalchemy.orm import backref
 import sqlite3
 
 app=Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///practicals.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///votinglist.db'
 app.secret_key = '185001096'
 
 db = SQLAlchemy(app)
 
-class Student(db.Model):
-    __tablename__ = 'student'
+class Voter(db.Model):
     id = db.Column(db.Integer,primary_key=True)
-    Regno=db.Column(db.Integer)
     Name = db.Column(db.String(50))
-    Year=db.Column(db.Integer)
-    Dept=db.Column(db.String(50))
-    Mark_1=db.Column(db.Integer)
-    
-    Mark_2=db.Column(db.Integer)
-    
-    Mark_3=db.Column(db.Integer)
-    
-    Mark_4=db.Column(db.Integer)
-    
-    Mark_5=db.Column(db.Integer)
+    Password=db.Column(db.String(50))
+    Voterid=db.Column(db.String(50))
+    Email_id = db.Column(db.String(200))
+    Contact = db.Column(db.String(30))
+    dob= db.Column(db.String(30))
+    address=db.Column(db.String(30))
+    gender=db.Column(db.String(30))
+    votingstatus=db.Column(db.Integer)
 
-    Result=db.Column(db.String(50))
-
-class Staff(db.Model):
-    __tablename__ = 'staff'
+class Votelist(db.Model):
     id = db.Column(db.Integer,primary_key=True)
-    Email = db.Column(db.String(50))
-    Password = db.Column(db.String(50))
-class COE(db.Model):
-    __tablename__ = 'coe'
+    v_id = db.Column(db.Integer)
+    party = db.Column(db.String(50))
+
+class Party(db.Model):
     id = db.Column(db.Integer,primary_key=True)
-    Emailid = db.Column(db.String(50))
-    Password = db.Column(db.String(50))
-
-    
-
+    Name = db.Column(db.String(50))
     
 def connect_db():
-    return sqlite3.connect('practicals.db')
+    return sqlite3.connect('votinglist.db')
 
 @app.before_request
 def before_request():
@@ -55,78 +40,88 @@ def before_request():
 @app.route('/',methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
-        emailid = request.form.get('email')
-        print(emailid)
-        passwd = request.form.get('pass')
-        print(passwd)
-        selectapplicant = Student.query.filter_by(Regno=emailid,Name=passwd).first() 
-        #selectapplicant1 = COE.query.filter_by(Emailid=emailid,Password=passwd).first()
-        if emailid=="staff_1" and passwd=="abcde":
-            return redirect('/teacherpage')
-        if emailid=="coe_1" and passwd=="abcd":
-            #session['username']=selectapplicant.id
-            return redirect('/coepage1')
-        if selectapplicant:
-            
-            session['username']=selectapplicant.Regno
-            print(session['username'])
-            print("Bye",selectapplicant.Regno)
-            return redirect('/studentpage')
+        email = request.form.get('mail')
+        password = request.form['password']
+        voter = Voter.query.filter_by(Email_id=email).first()
+        if email=='admin' and password=='root':
+            return redirect('/admin')
+        if voter and voter.Password == password:
+            session['username']=voter.id
+            return redirect('/voting')
+    return render_template('login.html')
 
-    return render_template('index.html')
+@app.route('/register',methods=['POST', 'GET'])
+def register():
+    if request.method == 'POST':
+        name = request.form['name']
+        vid= request.form['voterid']
+        pass1=request.form['password']
+        email= request.form['email']
+        contact= request.form.get('tel')
+        address= request.form['address']
+        dob= request.form.get('dob')
+        gender= request.form['gender']
+        data = Voter(Name=name,Password=pass1,Voterid=vid,Email_id=email,Contact=contact,dob=str(dob),address=address,gender=gender)
+        db.session.add(data)
+        db.session.commit()
+        return render_template('login.html')
+    return render_template('register.html')
 
+@app.route('/voting',methods=['POST', 'GET'])
+def voting():
+    voter = Voter.query.filter_by(id=g.user).first()
+    if(voter.votingstatus==None):
+        message=''
+        status=1
+        d = connect_db()
+        query="SELECT id,Name from party "
+        cur = d.execute(query)
+        list = [dict( id=row[0],party=row[1]) for row in cur.fetchall()]
+        d.commit()
+    else:
+        print('huuuuuuuuuuuuu')
+        message='You have already voted'
+        status=0
+        list=[]
+    if request.method == 'POST':
+        name = request.form['button']
+        data = Votelist(v_id=g.user,party=name)
+        db.session.add(data)
+        db.session.commit()
+        d = connect_db()
+        print(g.user)
+        query="UPDATE voter SET votingstatus='1' where (id='"+str(g.user)+"')"
+        print(query)
+        cur = d.execute(query)
+        d.commit()
+        d.close()
+        return redirect('/voting')
+    return render_template('voting.html',list=list,message=message,status=status)
 
-@app.route('/studentpage',methods=['POST', 'GET'])
-def studentpage():
-    givenstu=Student.query.filter_by(Regno=session['username']).first()
-    print(session['username'])
-    print(givenstu)
-    return render_template('studentpage.html',items=givenstu)
-    
+@app.route('/admin',methods=['POST', 'GET'])
+def admin():
+    d = connect_db()
+    query="SELECT id,party from votelist "
+    cur = d.execute(query)
+    list = [dict( id=row[0],party=row[1]) for row in cur.fetchall()]
+    d.commit()
+    d.close()
+    return render_template('admin.html',list=list)
 
-@app.route('/teacherpage',methods=['POST', 'GET'])
-def teacherpage():
-    if request.method=='POST':
-        regno=request.form['numer']
-        name=request.form['name']
-        sem=request.form['sem']
-        dept=request.form['dept']
-        year=request.form['year']
-        mark1=request.form['Mark1']
-        mark2=request.form['Mark2']
-        mark3=request.form['Mark3']
-        mark4=request.form['Mark4']
-        mark5=request.form['Mark5']
-        if(int(mark1)>=35 and int(mark2)>=35 and int(mark3)>=35 and int(mark4)>=35 and int(mark5)>=35):
-            result="pass"
-        else:
-            result="fail"
-        data = Student(Regno=regno,Name=name,Year=year,Dept=dept,Mark_1=mark1,Mark_2=mark2,Mark_3=mark3,Mark_4=mark4,Mark_5=mark5,Result=result)
+@app.route('/addparty',methods=['POST', 'GET'])
+def addparty():
+    if request.method == 'POST':
+        name = request.form['party']
+        data = Party(Name=name)
         db.session.add(data)
         db.session.commit() 
-        return "Sucessfully added"
-    else:
-        return render_template('teacherpage.html')
+        return redirect('/admin')
+    return render_template('addparty.html')
 
-    
-@app.route('/coepage1',methods=['POST', 'GET'])
-def coepage():
-    data = Student.query.all()
-    print(data)
-    return render_template('coepage1.html',items=data)
-@app.route('/view_stats',methods=['POST', 'GET'])
-def view_pass_stats():
-    passed = Student.query.filter_by(Result="pass").count()
-    failed= Student.query.filter_by(Result="fail").count()
-    return render_template('pass.html',items=passed,it=failed)
-
-    
-
-
-    
-
-        
-
+@app.route('/logout')
+def logout():
+   session.pop('username', None)
+   return render_template('login.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
