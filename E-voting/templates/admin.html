@@ -1,0 +1,18 @@
+<a href="/addparty">Add Party</a><br>
+<table >
+    <thead>
+       <tr>
+          <th scope="col">Voter Reference ID</th>
+          <th scope="col">Party</th>
+        </tr>
+    </thead>
+    <tbody>
+       <br><br><br><br>
+       {% for item in list %}<tr>
+          <td >{{ item['id'] }}</td>
+          <td>{{ item['party'] }}</td>
+       </tr>
+       {% endfor %}
+       <a href="/">LOGOUT</a><br>
+    </tbody>
+ </table>
