@@ -7,7 +7,7 @@ from sqlalchemy.orm import backref
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///course.db'
 app.static_folder = 'static'
-app.config['SECRET_KEY']= '185001112'
+app.config['SECRET_KEY']= '185001096'
 db = SQLAlchemy(app)
 
 class Student(db.Model):
