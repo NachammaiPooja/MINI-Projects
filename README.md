@@ -3,6 +3,8 @@
    <ol>
   <li>Course registration</li>
   <li>Blood bank</li>
+  <li>E-Voting</li>
+  <li>Student Mark Analysis</li>
   </ol>
 
 <h3>Tools Used are:</h3>
